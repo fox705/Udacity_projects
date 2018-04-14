@@ -7,10 +7,13 @@ CITY_DATA = { 'chicago': 'chicago.csv',
               'washington': 'washington.csv' }
 MONTH_DATA = ('january', 'february', 'march', 'april', 'may', 'june', 'july', 'september', 'october', 'november', 'december')
 
+
 def get_filters():
+""" Get filters from user input"""
+    
     print('Hello! Let\'s explore some US bikeshare data!')
 
-# get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
+# get user input for city (chicago, new york city, washington).
     while True:
         city = input("Please chose the city to analyst data: \n Chicago, New York City or Washington ?\n").lower()
         if city not in ('chicago', 'new york city', 'washington'):
@@ -18,15 +21,15 @@ def get_filters():
             continue
         else:
             break
-
+# get user input for filtr by (month, day, washington).
     while True:
         filtr = input("Please chose the filtr: \n month, day, both\n").lower()
-        if filtr not in ('month', 'day', 'both', 'none'):
+        if filtr not in ('month', 'day', 'both'):
             print("Sorry, you did something wrong. Try again.\n")
             continue
         else:
             break
-
+# get user input for month if filtr both (all, january, february, ... , june)
     if filtr in ('both'):
         while True:
                 month = input("Which month do you like to see? \n Type all or name of the single month.\n").lower()
@@ -35,6 +38,7 @@ def get_filters():
                     continue
                 else:
                     break
+# get user input for day if filtr both (all, monday, tuesday, ... sunday)	
         while True:
                 day = input("Which day do you like to see?\n Type all or name of single day.\n").lower()
                 if day not in ('all','monday', 'thursday', 'wendsday', 'thursday', 'freiday', 'saturday', 'sunday'):
@@ -74,10 +78,12 @@ def get_filters():
 
 
 def load_data(city, month, day):
+""" Load data from csv file with filters """
 
+    #Load csv file
     df = pd.read_csv(CITY_DATA[city])
     df['Start Time'] = pd.to_datetime(df['Start Time'])
-
+    #filtr data by inputs
     df['month'] = df['Start Time'].dt.month
     df['day_of_week'] = df['Start Time'].dt.weekday_name
 
