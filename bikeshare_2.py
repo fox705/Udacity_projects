@@ -9,8 +9,7 @@ MONTH_DATA = ('january', 'february', 'march', 'april', 'may', 'june', 'july', 's
 
 
 def get_filters():
-""" Get filters from user input"""
-    
+
     print('Hello! Let\'s explore some US bikeshare data!')
 
 # get user input for city (chicago, new york city, washington).
@@ -38,7 +37,7 @@ def get_filters():
                     continue
                 else:
                     break
-# get user input for day if filtr both (all, monday, tuesday, ... sunday)	
+# get user input for day if filtr both (all, monday, tuesday, ... sunday)
         while True:
                 day = input("Which day do you like to see?\n Type all or name of single day.\n").lower()
                 if day not in ('all','monday', 'thursday', 'wendsday', 'thursday', 'freiday', 'saturday', 'sunday'):
@@ -56,7 +55,7 @@ def get_filters():
                 continue
             else:
                 break
-		
+
  # get user input for day of week (all, monday, tuesday, ... sunday)
     if filtr in ('day'):
         while True:
@@ -78,7 +77,7 @@ def get_filters():
 
 
 def load_data(city, month, day):
-""" Load data from csv file with filters """
+
 
     #Load csv file
     df = pd.read_csv(CITY_DATA[city])
