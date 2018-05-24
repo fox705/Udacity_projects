@@ -1,0 +1,252 @@
+
+# coding: utf-8
+
+# > **Tip**: Welcome to the Investigate a Dataset project! You will find tips in quoted sections like this to help organize your approach to your investigation. Before submitting your project, it will be a good idea to go back through your report and remove these sections to make the presentation of your work as tidy as possible. First things first, you might want to double-click this Markdown cell and change the title so that it reflects your dataset and investigation.
+# 
+# # Project: Movies Data Analysis
+# 
+# ## Table of Contents
+# <ul>
+# <li><a href="#intro">Introduction</a></li>
+# <li><a href="#wrangling">Data Wrangling</a></li>
+# <li><a href="#eda">Exploratory Data Analysis</a></li>
+# <li><a href="#conclusions">Conclusions</a></li>
+# </ul>
+
+# <a id='intro'></a>
+# ## Introduction
+# 
+# > **Tip**: In this section of the report, provide a brief introduction to the dataset you've selected for analysis. At the end of this section, describe the questions that you plan on exploring over the course of the report. Try to build your report around the analysis of at least one dependent variable and three independent variables.
+# >
+# > If you haven't yet selected and downloaded your data, make sure you do that first before coming back here. If you're not sure what questions to ask right now, then make sure you familiarize yourself with the variables and the dataset context for ideas of what to explore.
+
+# ## Welcome to my analysis! 
+# 
+# >In this project I will be analysis Movies Dataset to answer two questions. First question will be about correlation between cost of movie and grades whith it get. I want to check if it allways true that Movies with big budget are better. Second question will be about gener and its popularity. I want to see how changing viewers preferences year by year and what is now most catche gener. 
+
+# In[2]:
+
+
+# import statements for all of the packages that you
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# <a id='wrangling'></a>
+# ## Data Wrangling
+# 
+# > **Tip**: In this section of the report, you will load in the data, check for cleanliness, and then trim and clean your dataset for analysis. Make sure that you document your steps carefully and justify your cleaning decisions.
+# 
+# ### General Properties
+
+# In[3]:
+
+
+# import date and print few lines.
+df = pd.read_csv('tmdb-movies.csv')
+
+df.head()
+
+
+# In[4]:
+
+
+df.shape
+
+
+# In[68]:
+
+
+df.describe()
+
+
+# In[6]:
+
+
+df.info()
+
+
+# > **Tip**: You should _not_ perform too many operations in each cell. Create cells freely to explore your data. One option that you can take with this project is to do a lot of explorations in an initial notebook. These don't have to be organized, but make sure you use enough comments to understand the purpose of each code cell. Then, after you're done with your analysis, create a duplicate notebook where you will trim the excess and organize your steps so that you have a flowing, cohesive report.
+# 
+# > **Tip**: Make sure that you keep your reader informed on the steps that you are taking in your investigation. Follow every code cell, or every set of related code cells, with a markdown cell to describe to the reader what was found in the preceding cell(s). Try to make it so that the reader can then understand what they will be seeing in the following cell(s).
+# 
+# ### Data Cleaning (Replace this with more specific notes!)
+
+# In[7]:
+
+
+#drop columns with i will not going to use
+df.drop(['id','imdb_id','original_title','revenue', 'cast', 'homepage','director', 'tagline','keywords', 'overview', 'runtime','production_companies','release_date','vote_count', 'budget_adj', 'revenue_adj' ], axis=1, inplace=True)
+
+
+# In[8]:
+
+
+df.head()
+
+
+# In[9]:
+
+
+df.info()
+
+
+# > Because there are movies with more than one genre (will have a string that holds more than one value) I am going to separate this.
+
+# In[10]:
+
+
+def split_columns(df, column):
+    new_df = df[column].str.split('|', expand = True)
+    names_df = list(new_df)
+    for name in names_df:
+        names_df[name] = column + str(name)
+    new_df.columns = names_df
+    
+    return new_df
+
+
+# In[11]:
+
+
+new_df_genre = split_columns(df, 'genres')
+df = df.join(new_df_genre)
+
+
+# In[12]:
+
+
+df.head()
+
+
+# > I got a lot of 0 values in budget and revenue. Because of it i cant answer my question so I need to drop it.
+# 
+
+# In[13]:
+
+
+df.isnull().sum()
+
+
+# > Cause more than half values i naan i drop these columns
+
+# In[14]:
+
+
+#Replace 0 values by nan
+df = df.replace(0, pd.np.nan)
+
+
+# > Del Col with missing values. There are it to much so i left only the best one. 
+# 
+# 
+
+# In[16]:
+
+
+#Drop nan columns
+df.drop(['genres','genres1','genres2', 'genres3', 'genres4'], axis=1, inplace=True)
+
+
+# In[17]:
+
+
+#drop rows with missing values
+df.duplicated().any()
+
+
+# In[18]:
+
+
+df.drop_duplicates(inplace = True)
+df.info()
+
+
+# In[19]:
+
+
+df.head()
+
+
+# In[21]:
+
+
+df.dropna(inplace = True)
+df.info()
+
+
+# In[53]:
+
+
+df1 = df.sort_values(by=['budget'])
+
+
+# In[54]:
+
+
+df.describe()
+
+
+# In[69]:
+
+
+df1.plot(x='budget',y='vote_average', kind='scatter',legend=False, alpha=0.5, figsize=(5,5))
+
+
+# In[70]:
+
+
+df1[['genres0','popularity']].plot(kind='bar', title ="Popularity by year", figsize=(15, 10), legend=True, fontsize=12)
+
+
+
+# <a id='eda'></a>
+# ## Exploratory Data Analysis
+# 
+# > **Tip**: Now that you've trimmed and cleaned your data, you're ready to move on to exploration. Compute statistics and create visualizations with the goal of addressing the research questions that you posed in the Introduction section. It is recommended that you be systematic with your approach. Look at one variable at a time, and then follow it up by looking at relationships between variables.
+# 
+# ### Research Question 1 (Replace this header name!)
+
+# In[275]:
+
+
+df.head()
+
+
+# In[273]:
+
+
+# Use this, and more code cells, to explore your data. Don't forget to add
+#   Markdown cells to document your observations and findings.
+df.plot()
+
+
+# In[249]:
+
+
+df = pd.DataFrame(np.random.randn(60, 4), index=ts.index, columns=list('popularity', 'genres0'))
+
+In [6]: df = df.cumsum()
+
+In [7]: plt.figure(); df.plot();
+
+
+# ### Research Question 2  (Replace this header name!)
+
+# In[ ]:
+
+
+# Continue to explore the data to address your additional research
+#   questions. Add more headers as needed if you have more questions to
+#   investigate.
+
+
+# <a id='conclusions'></a>
+# ## Conclusions
+# 
+# > **Tip**: Finally, summarize your findings and the results that have been performed. Make sure that you are clear with regards to the limitations of your exploration. If you haven't done any statistical tests, do not imply any statistical conclusions. And make sure you avoid implying causation from correlation!
+# 
+# > **Tip**: Once you are satisfied with your work, you should save a copy of the report in HTML or PDF form via the **File** > **Download as** submenu. Before exporting your report, check over it to make sure that the flow of the report is complete. You should probably remove all of the "Tip" quotes like this one so that the presentation is as tidy as possible. Congratulations!
